@@ -156,18 +156,18 @@ const List: React.FC = () => {
       <Filters>
         <button
           type="button"
-          className={`tag-filter tag-filter-recurrent ${frequencyFilterSelected.includes(
-            "recorrente"
-          ) && "tag-actived"}`}
+          className={`tag-filter tag-filter-recurrent ${
+            frequencyFilterSelected.includes("recorrente") && "tag-actived"
+          }`}
           onClick={() => handleFrequencyClick("recorrente")}
         >
           Recorrentes
         </button>
         <button
           type="button"
-          className={`tag-filter tag-filter-eventual ${frequencyFilterSelected.includes(
-            "eventual"
-          ) && "tag-actived"}`}
+          className={`tag-filter tag-filter-eventual ${
+            frequencyFilterSelected.includes("eventual") && "tag-actived"
+          }`}
           onClick={() => handleFrequencyClick("eventual")}
         >
           Eventuais
@@ -177,6 +177,7 @@ const List: React.FC = () => {
         {data.map((item) => (
           <HistoryCardFinance
             key={item.id}
+            id={item.id}
             title={item.description}
             subtitle={item.dateFormatted}
             tagColor={item.tagColor}

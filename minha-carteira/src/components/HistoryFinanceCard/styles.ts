@@ -60,3 +60,14 @@ export const Tag = styled.div<ITagProps>`
   position: absolute;
   left: 0;
 `;
+
+export const ContainerInline = styled.span`
+  display: flex;
+  flex-direction: row;
+  > a {
+    padding-left: 10px;
+    color: ${(props) => props.theme.colors.warning};
+    background-color: transparent;
+    text-decoration: none;
+  }
+`;

@@ -24,10 +24,12 @@ import {
 import { useAuth } from "../../hooks/auth";
 import { useTheme } from "../../hooks/theme";
 import Toggle from "../Toggle";
+import { useNavigate } from "react-router-dom";
 
 const Aside: React.FC = () => {
-  const { singOut } = useAuth();
+  const { signOut } = useAuth();
   const { toggleTheme, theme } = useTheme();
+  const navigate = useNavigate();
 
   const [darkTheme, setDarkTheme] = useState(() =>
     theme.title === "dark" ? true : false
@@ -41,6 +43,11 @@ const Aside: React.FC = () => {
   const handleChangeTheme = () => {
     setDarkTheme(!darkTheme);
     toggleTheme();
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    navigate("/");
   };
 
   return (
@@ -77,7 +84,7 @@ const Aside: React.FC = () => {
         </MenuItemLink>
       </MenuContainer>
       <MenuContainer>
-        <MenuItemButton onClick={singOut}>
+        <MenuItemButton onClick={handleSignOut}>
           <MdExitToApp />
           Sair
         </MenuItemButton>

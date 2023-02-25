@@ -5,12 +5,12 @@ import Input from "../../components/Input";
 import { Container, Form, FormTitle, Logo } from "./styles";
 import { useAuth } from "../../hooks/auth";
 
-const SingIn: React.FC = () => {
+const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   // teste@email.com
   const [password, setPassword] = useState<string>("");
   // 123
-  const { singIn } = useAuth();
+  const { signIn } = useAuth();
 
   return (
     <Container>
@@ -20,7 +20,7 @@ const SingIn: React.FC = () => {
       </Logo>
       <Form
         onSubmit={() => {
-          singIn(email, password);
+          signIn(email, password);
         }}
       >
         <FormTitle>Entrar</FormTitle>
@@ -42,4 +42,4 @@ const SingIn: React.FC = () => {
   );
 };
 
-export default SingIn;
+export default SignIn;
