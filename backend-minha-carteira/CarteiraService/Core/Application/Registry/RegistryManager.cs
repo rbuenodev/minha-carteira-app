@@ -100,7 +100,7 @@ namespace Application.Registry
         {
             try
             {
-                var registry = await _registryRepository.Get(id);
+                var registry = await _registryRepository.GetAggragate(id);
                 if (registry != null)
                     return new RegistryResponse<ResultRegistryDTO> { Success = true, Data = ResultRegistryDTO.MapToDTO(registry) };
 

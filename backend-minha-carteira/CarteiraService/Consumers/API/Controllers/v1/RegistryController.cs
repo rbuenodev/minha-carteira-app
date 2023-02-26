@@ -22,24 +22,28 @@ namespace API.Controllers.v1
             _registryManager = registryManager;
         }
 
-        [HttpGet()]
+        [HttpGet("userId/{userId}")]
         public async Task<ActionResult<RegistryResponse<List<ResultRegistryDTO>>>> GetAllRegistries(
             [FromRoute] int userId,
-            [FromQuery] int? id,
-            [FromQuery] int? month,
-            [FromQuery] int? year,
-            [FromQuery] DateOnly? dateBiggerThan,
-            [FromQuery] DateOnly? dateLowerThan)
+            [FromQuery] string? dateBiggerThan = "",
+            [FromQuery] string? dateLowerThan = "",
+            [FromQuery] int? id = 0,
+            [FromQuery] int? month = 0,
+            [FromQuery] int? year = 0)
+
         {
+
             var filters = new RegistryFilter
             {
                 UserId = userId,
                 Id = (int)id,
                 Month = (int)month,
                 Year = (int)year,
-                DateBiggerThan = (DateOnly)dateBiggerThan,
-                DateLowerThan = (DateOnly)dateLowerThan
+                DateBiggerThan = dateBiggerThan,
+                DateLowerThan = dateLowerThan
+
             };
+
             var res = await _registryManager.GetAllRegistry(filters);
 
             if (res.HasErrors) return StatusCode(500, res);
@@ -82,7 +86,7 @@ namespace API.Controllers.v1
             return StatusCode(500);
         }
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<ActionResult<RegistryResponse<ResultRegistryDTO>>> PatchUser([FromBody] UpdateRegistryDTO updateRegistryDTO)
         {
             if (updateRegistryDTO == null) return BadRequest();

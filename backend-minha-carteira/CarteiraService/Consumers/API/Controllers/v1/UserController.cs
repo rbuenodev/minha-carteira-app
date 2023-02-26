@@ -23,9 +23,9 @@ namespace API.Controllers.v1
 
         [HttpGet()]
         public async Task<ActionResult<UserResponse<List<ResultUserDTO>>>> GetAll(
-            [FromQuery] int? id,
-            [FromQuery] string? userEmail,
-            [FromQuery] string? userName)
+            [FromQuery] int? id = 0,
+            [FromQuery] string? userEmail = "",
+            [FromQuery] string? userName = "")
         {
             var filters = new UserFilter { Id = (int)id, UserEmail = userEmail, UserName = userName };
             var res = await _userManager.GetAllUsers(filters);
@@ -70,7 +70,7 @@ namespace API.Controllers.v1
             return StatusCode(500);
         }
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<ActionResult<UserResponse<ResultUserDTO>>> PatchUser([FromBody] UpdateUserDTO updateUserDTO)
         {
             if (updateUserDTO == null) return BadRequest();

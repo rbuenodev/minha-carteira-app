@@ -18,14 +18,21 @@ namespace Domain.Registries.Entities
 
         private bool Validate()
         {
+            var errors = "";
             if (string.IsNullOrEmpty(Description))
-                throw new ArgumentNullException("Name");
+                errors = "Name cannot be null; ";
+
             if (Amount <= 0)
-                throw new Exception("Amount might be bigger than zero");
+                errors += "Amount might be bigger than zero; ";
+
             if (User == null)
-                throw new ArgumentNullException("User");
+                errors += "User cannot be null; ";
+
             if (Date == default(DateOnly))
-                throw new ArgumentNullException("Date");
+                errors += "Date cannot be null; ";
+
+            if (!string.IsNullOrEmpty(errors))
+                throw new ArgumentNullException(errors);
 
             return true;
         }

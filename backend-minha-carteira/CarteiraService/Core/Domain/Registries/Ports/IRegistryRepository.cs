@@ -9,6 +9,6 @@ namespace Domain.Registries.Ports
         Task<Registry?> GetAggragate(int id);
         Task<List<Registry>> GetAll(RegistryFilter filters);
         Task Delete(int id);
-        Task Save(Registry registry);
+        Task<Registry> Save(Registry registry);
     }
 }

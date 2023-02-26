@@ -1,5 +1,6 @@
 ﻿using Domain.Users.Filter;
 using Domain.Users.Ports;
+using System.Net.Http.Headers;
 using Entity = Domain.Users.Entities;
 
 
@@ -46,29 +47,31 @@ namespace Data.User
             return _dbContext.Users.ToList();
         }
 
-        public async Task Save(Entity.User user)
+        public async Task<Entity.User> Save(Entity.User user)
         {
             var entity = _dbContext.Users.FirstOrDefault(r => r.Id == user.Id);
             if (entity != null)
             {
-                await Update(entity, user);
+                return await Update(entity, user);
             }
             else
             {
-                await Insert(user);
+                return await Insert(user);
             }
         }
 
-        private async Task Insert(Entity.User user)
+        private async Task<Entity.User> Insert(Entity.User user)
         {
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
+            return user;
         }
 
-        private async Task Update(Entity.User entity, Entity.User user)
+        private async Task<Entity.User> Update(Entity.User entity, Entity.User user)
         {
             _dbContext.Entry(entity).CurrentValues.SetValues(user);
             await _dbContext.SaveChangesAsync();
+            return user;
         }
     }
 }

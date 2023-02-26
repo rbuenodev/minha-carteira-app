@@ -6,8 +6,8 @@ namespace Domain.Registries.Filters
     {
         public int Month { get; set; }
         public int Year { get; set; }
-        public DateOnly DateBiggerThan { get; set; }
-        public DateOnly DateLowerThan { get; set; }
+        public string DateBiggerThan { get; set; }
+        public string DateLowerThan { get; set; }
         public int UserId { get; set; }
     }
 }

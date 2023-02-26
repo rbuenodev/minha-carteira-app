@@ -11,6 +11,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.AllowAnyHeader()
+              .AllowAnyOrigin()
+              .AllowAnyMethod()
+              .WithOrigins("*"))
+);
+
 var connectionString = builder.Configuration.GetValue<string>("ConnectionString");
 builder.Services.RegisterDependencies(connectionString);
 
@@ -28,6 +36,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
 app.Run();

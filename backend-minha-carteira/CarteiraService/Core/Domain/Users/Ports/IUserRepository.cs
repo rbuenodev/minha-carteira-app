@@ -7,7 +7,7 @@ namespace Domain.Users.Ports
     {
         Task<User?> Get(int id);
         Task<List<User>> GetAll(UserFilter? filter);
-        Task Save(User user);
+        Task<User> Save(User user);
         Task Delete(int id);
     }
 }
