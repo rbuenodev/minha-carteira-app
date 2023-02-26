@@ -1,9 +1,8 @@
-﻿using Application.Registry.DTOs;
-
+﻿
 namespace Application.Registry.Response
 {
-    public class RegistryResponse : Application.Response
+    public class RegistryResponse<T> : Application.Response
     {
-        public ResultRegistryDTO? Data { get; set; }
+        public T? Data { get; set; }
     }
 }

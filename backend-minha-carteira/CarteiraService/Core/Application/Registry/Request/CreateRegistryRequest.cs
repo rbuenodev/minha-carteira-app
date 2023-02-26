@@ -4,6 +4,6 @@ namespace Application.Registry.Request
 {
     public class CreateRegistryRequest
     {
-        public CreateRegistryDTO createRegistryDTO { get; set; }
+        public CreateRegistryDTO Data { get; set; }
     }
 }

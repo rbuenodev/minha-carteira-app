@@ -20,7 +20,7 @@ namespace Domain.Registries.Entities
         {
             if (string.IsNullOrEmpty(Description))
                 throw new ArgumentNullException("Name");
-            if (Amount == 0)
+            if (Amount <= 0)
                 throw new Exception("Amount might be bigger than zero");
             if (User == null)
                 throw new ArgumentNullException("User");

@@ -21,6 +21,10 @@ namespace Data.User
                 _dbContext.Remove(entity);
                 await _dbContext.SaveChangesAsync();
             }
+            else
+            {
+                throw new Exception("Entity not found");
+            }
         }
 
         public async Task<Entity.User> Get(int id)
@@ -47,12 +51,23 @@ namespace Data.User
             var entity = _dbContext.Users.FirstOrDefault(r => r.Id == user.Id);
             if (entity != null)
             {
-                _dbContext.Entry(entity).CurrentValues.SetValues(user);
+                await Update(entity, user);
             }
             else
             {
-                _dbContext.Users.Add(user);
+                await Insert(user);
             }
+        }
+
+        private async Task Insert(Entity.User user)
+        {
+            _dbContext.Users.Add(user);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private async Task Update(Entity.User entity, Entity.User user)
+        {
+            _dbContext.Entry(entity).CurrentValues.SetValues(user);
             await _dbContext.SaveChangesAsync();
         }
     }

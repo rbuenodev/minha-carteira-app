@@ -22,6 +22,10 @@ namespace Data.Registry
                 _dbContext.Remove(entity);
                 await _dbContext.SaveChangesAsync();
             }
+            else
+            {
+                throw new Exception("Entity not found");
+            }
         }
 
         public async Task<Entities.Registry?> Get(int id)
@@ -95,12 +99,23 @@ namespace Data.Registry
             var entity = _dbContext.Registries.FirstOrDefault(r => r.Id == registry.Id);
             if (entity != null)
             {
-                _dbContext.Entry(entity).CurrentValues.SetValues(registry);
+                await Update(entity, registry);
             }
             else
             {
-                _dbContext.Registries.Add(registry);
+                await Insert(registry);
             }
+        }
+
+        private async Task Insert(Entities.Registry registry)
+        {
+            _dbContext.Registries.Add(registry);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private async Task Update(Entities.Registry entity, Entities.Registry registry)
+        {
+            _dbContext.Entry(entity).CurrentValues.SetValues(registry);
             await _dbContext.SaveChangesAsync();
         }
     }
