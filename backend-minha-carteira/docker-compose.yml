@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  api:
+    image: carteiraapi
+    build:
+      context: .
+      dockerfile: CarteiraService/Consumers/API/Dockerfile
+    ports:
+     - "3336:80"
+     - "3337:443"
+    tty: true
+    depends_on:
+      - postgres
+    networks: 
+      - backend
+  postgres:
+    container_name: postgres_carteira  
+    image: 'postgres:14.5'
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: carteira
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data      
+    networks: 
+      - backend
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    tty: true
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - '8000:80'
+    depends_on:
+      - postgres 
+    networks: 
+      - backend
+networks:
+  backend:
+    name: carteira_net
