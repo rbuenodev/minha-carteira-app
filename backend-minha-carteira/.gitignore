@@ -367,3 +367,5 @@ FodyWeavers.xsd
 .dbdata
 /coveragereport
 /coverage_report
+
+./postgres-data
