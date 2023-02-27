@@ -1,10 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Button from "../../components/Button";
 import ContentHeader from "../../components/ContentHeader";
-import CustomButton from "../../components/CustomButton";
 import Input from "../../components/Input";
 import SelectInput from "../../components/SelectInput";
 import {
+  deleteRegistryById,
+  getRegistryById,
+  postRegistry,
+  putRegistry,
+} from "../../services/Registry/registryService";
+import {
+  BlueButton,
   Container,
   ContainerFooter,
   ContainerInline,
@@ -14,16 +21,29 @@ import {
 } from "./styles";
 
 interface IRegistry {
+  id: number;
   description: string;
-  amount: string;
-  date: string;
+  amount: number | undefined;
   type: string;
   frequency: string;
-  obs: string;
+  date: string;
+  obs?: string;
+  userId: number;
+  userName: string;
 }
 const EditRegistry: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [registry, setRegistry] = useState<IRegistry>({} as IRegistry);
+  const [registry, setRegistry] = useState<IRegistry>({
+    id: 0,
+    description: "",
+    amount: undefined,
+    date: "",
+    type: "Entrada",
+    frequency: "Eventual",
+    obs: "",
+    userId: 1,
+    userName: "",
+  } as IRegistry);
   const navigate = useNavigate();
 
   const pageData = useMemo(() => {
@@ -38,10 +58,26 @@ const EditRegistry: React.FC = () => {
         };
   }, [id]);
 
+  useEffect(() => {
+    const exec = async () => {
+      if (id === "0") {
+        return;
+      }
+      const response = await getRegistryById(id);
+      if (!response) {
+        return;
+      }
+      if (response.success) {
+        setRegistry(response.data as IRegistry);
+      }
+    };
+    exec();
+  }, [id]);
+
   const types = useMemo(() => {
     return [
       { label: "Entrada", value: "Entrada" },
-      { label: "Saída", value: "Saída" },
+      { label: "Saida", value: "Saida" },
     ];
   }, []);
 
@@ -52,12 +88,18 @@ const EditRegistry: React.FC = () => {
     ];
   }, []);
 
-  const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.log(registry);
-
+      console.log("registry", registry);
+      if (id === "0") {
+        const res = await insertRegistry();
+        console.log("toast", res);
+      } else {
+        const res = await updateRegistry();
+        console.log("toast", res);
+      }
       clearForm();
     }
   };
@@ -69,14 +111,61 @@ const EditRegistry: React.FC = () => {
     return false;
   };
 
+  const updateRegistry = async () => {
+    const res = await putRegistry(registry);
+    if (!res) {
+      return;
+    }
+
+    if (res.success) {
+      console.log(res);
+      return true;
+    }
+    return false;
+  };
+
+  const insertRegistry = async () => {
+    const res = await postRegistry(registry);
+    if (!res) {
+      return;
+    }
+
+    if (res.success) {
+      console.log(res);
+      return true;
+    }
+    return false;
+  };
+
+  const deleteRegistry = async () => {
+    if (registry.id === 0) {
+      return;
+    }
+    const res = await deleteRegistryById(registry.id.toString());
+    if (!res) {
+      return;
+    }
+
+    if (res.success) {
+      console.log(res);
+      clearForm();
+      navigate("/edit/0");
+      return true;
+    }
+    return false;
+  };
+
   const clearForm = () => {
     setRegistry({
+      id: 0,
       description: "",
-      amount: "",
+      amount: undefined,
       date: "",
-      type: "",
-      frequency: "",
+      type: "Entrada",
+      frequency: "Eventual",
       obs: "",
+      userId: 1,
+      userName: "",
     });
   };
 
@@ -106,6 +195,7 @@ const EditRegistry: React.FC = () => {
                 OnChange={(e) => {
                   setRegistry({ ...registry, type: e.target.value });
                 }}
+                defaultValue={registry.description}
               />
             </div>
             <div>
@@ -128,6 +218,7 @@ const EditRegistry: React.FC = () => {
                 OnChange={(e) => {
                   setRegistry({ ...registry, frequency: e.target.value });
                 }}
+                defaultValue={registry.description}
               />
             </div>
             <div>
@@ -139,7 +230,7 @@ const EditRegistry: React.FC = () => {
                 placeholder="Valor"
                 required
                 onChange={(e) => {
-                  setRegistry({ ...registry, amount: e.target.value });
+                  setRegistry({ ...registry, amount: +e.target.value });
                 }}
                 name="amount"
                 value={registry.amount}
@@ -157,20 +248,16 @@ const EditRegistry: React.FC = () => {
             value={registry.obs}
           />
           <ContainerFooter>
-            <DeleteButton onClick={() => {}}>Excluir</DeleteButton>
-            <div>
-              <CustomButton
-                isSuccess={false}
-                onClick={() => {
-                  navigate("/", { replace: true });
-                }}
-              >
-                Voltar
-              </CustomButton>
-              <CustomButton isSuccess={true} onClick={() => {}}>
-                {id === "0" ? "Cadastrar" : "Atualizar"}
-              </CustomButton>
-            </div>
+            <DeleteButton
+              onClick={() => {
+                deleteRegistry();
+              }}
+            >
+              Excluir
+            </DeleteButton>
+            <BlueButton>
+              <Button>{id === "0" ? "Cadastrar" : "Atualizar"}</Button>
+            </BlueButton>
           </ContainerFooter>
         </Form>
       </div>

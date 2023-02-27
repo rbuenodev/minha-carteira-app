@@ -30,69 +30,70 @@ namespace Data.Registry
 
         public async Task<Entities.Registry?> Get(int id)
         {
-            return _dbContext.Registries.FirstOrDefault(r => r.Id == id);
+            return await _dbContext.Registries.FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Entities.Registry?> GetAggragate(int id)
         {
-            return _dbContext.Registries.Include(u => u.User).FirstOrDefault(r => r.Id == id);
+            return await _dbContext.Registries.Include(u => u.User).FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<List<Entities.Registry>> GetAll(RegistryFilter filters)
         {
             if (filters == null)
-                return _dbContext.Registries.ToList();
+                return await _dbContext.Registries.ToListAsync();
 
             if (filters.Id > 0)
-                return _dbContext.Registries.Where(r => r.Id == filters.Id && r.User.Id == filters.UserId).ToList();
+                return await _dbContext.Registries.Where(r => r.Id == filters.Id && r.User.Id == filters.UserId).ToListAsync();
 
             if (filters.Month > 0 && filters.Year > 0)
             {
-                DateOnly initialDate;
-                if (DateTime.TryParse($"{filters.Month}/01/{filters.Year}", out var dateI)) initialDate = DateOnly.FromDateTime(dateI);
-                DateOnly finalDate;
-                var lastDayOfMonth = DateTime.DaysInMonth(filters.Month, filters.Year);
-                if (DateTime.TryParse($"{filters.Month}/{lastDayOfMonth}/{filters.Year}", out var dateF)) initialDate = DateOnly.FromDateTime(dateF);
+                var initialDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                if (DateTime.TryParse($"01/{filters.Month}/{filters.Year}", out var dateI)) initialDate = DateOnly.FromDateTime(dateI);
+                var finalDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                var lastDayOfMonth = DateTime.DaysInMonth(filters.Year, filters.Month);
+                if (DateTime.TryParse($"{lastDayOfMonth}/{filters.Month}/{filters.Year}", out var dateF)) finalDate = DateOnly.FromDateTime(dateF);
 
-                return _dbContext.Registries.Include(u => u.User).Where(r => r.Date >= initialDate && r.Date <= finalDate && r.User.Id == filters.UserId).ToList();
+                return await _dbContext.Registries.Include(u => u.User).Where(r => r.Date >= initialDate && r.Date <= finalDate && r.User.Id == filters.UserId).ToListAsync();
             }
 
             if (filters.Year > 0)
             {
-                DateOnly initialDate;
+                var initialDate = DateOnly.FromDateTime(DateTime.UtcNow);
                 if (DateTime.TryParse($"01/01/{filters.Year}", out var dateI)) initialDate = DateOnly.FromDateTime(dateI);
-                DateOnly finalDate;
-                if (DateTime.TryParse($"12/01/{filters.Year}", out var dateF)) initialDate = DateOnly.FromDateTime(dateF);
+                var finalDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                var lastDayOfMonth = DateTime.DaysInMonth(filters.Year, 12);
+                if (DateTime.TryParse($"{lastDayOfMonth}/12/{filters.Year}", out var dateF)) finalDate = DateOnly.FromDateTime(dateF);
 
-                return _dbContext.Registries.Include(u => u.User).Where(r => r.Date >= initialDate && r.Date <= finalDate && r.User.Id == filters.UserId).ToList();
+                return await _dbContext.Registries.Include(u => u.User).Where(r => r.Date >= initialDate && r.Date <= finalDate && r.User.Id == filters.UserId).ToListAsync();
             }
 
             if (!string.IsNullOrEmpty(filters.DateLowerThan) && !string.IsNullOrEmpty(filters.DateBiggerThan))
             {
-                DateOnly initialDate;
+                var initialDate = DateOnly.FromDateTime(DateTime.UtcNow);
                 if (DateTime.TryParse(filters.DateBiggerThan, out var dateI)) initialDate = DateOnly.FromDateTime(dateI);
-                DateOnly finalDate;
-                if (DateTime.TryParse(filters.DateLowerThan, out var dateF)) initialDate = DateOnly.FromDateTime(dateF);
+                var finalDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                if (DateTime.TryParse(filters.DateLowerThan, out var dateF)) finalDate = DateOnly.FromDateTime(dateF);
 
-                return _dbContext.Registries.Include(u => u.User).Where(r => r.Date > initialDate && r.Date < finalDate && r.User.Id == filters.UserId).ToList();
+                return await _dbContext.Registries.Include(u => u.User).Where(r => r.Date > initialDate && r.Date < finalDate && r.User.Id == filters.UserId).ToListAsync();
             }
 
             if (!string.IsNullOrEmpty(filters.DateLowerThan))
             {
-                DateOnly date;
+                var date = DateOnly.FromDateTime(DateTime.UtcNow);
                 if (DateTime.TryParse(filters.DateLowerThan, out var dateF)) date = DateOnly.FromDateTime(dateF);
-                return _dbContext.Registries.Include(u => u.User).Where(r => r.Date < date && r.User.Id == filters.UserId).ToList();
+                return await _dbContext.Registries.Include(u => u.User).Where(r => r.Date < date && r.User.Id == filters.UserId).ToListAsync();
             }
 
             if (!string.IsNullOrEmpty(filters.DateBiggerThan))
             {
-                DateOnly date;
-                if (DateTime.TryParse(filters.DateBiggerThan, out var dateF)) date = DateOnly.FromDateTime(dateF);
+                var date = DateOnly.FromDateTime(DateTime.UtcNow);
+                if (DateTime.TryParse(filters.DateBiggerThan, out var dateI)) date = DateOnly.FromDateTime(dateI);
 
-                return _dbContext.Registries.Include(u => u.User).Where(r => r.Date > date && r.User.Id == filters.UserId).ToList();
+                return await _dbContext.Registries.Include(u => u.User).Where(r => r.Date > date && r.User.Id == filters.UserId).ToListAsync();
             }
 
-            return _dbContext.Registries.Include(u => u.User).Where(u => u.User.Id == filters.UserId).ToList();
+            return await _dbContext.Registries.Include(u => u.User).Where(u => u.User.Id == filters.UserId).ToListAsync();
         }
 
         public async Task<Entities.Registry> Save(Entities.Registry registry)

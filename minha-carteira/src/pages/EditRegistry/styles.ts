@@ -39,18 +39,14 @@ export const ContainerFooter = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  a {
+  > a {
     text-decoration: none;
     color: ${(props) => props.theme.colors.warning};
   }
 
-  div {
+  > div {
     display: flex;
     width: 50%;
-
-    button {
-      margin-left: 20px;
-    }
 
     @media (max-width: 400px) {
       flex-direction: column;
@@ -61,4 +57,13 @@ export const ContainerFooter = styled.div`
 export const DeleteButton = styled.button`
   background-color: transparent;
   color: ${(props) => props.theme.colors.warning};
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const BlueButton = styled.span`
+  > button {
+    background-color: ${(props) => props.theme.colors.success};
+  }
 `;

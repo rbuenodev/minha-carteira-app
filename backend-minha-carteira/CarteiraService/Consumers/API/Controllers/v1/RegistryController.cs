@@ -22,9 +22,9 @@ namespace API.Controllers.v1
             _registryManager = registryManager;
         }
 
-        [HttpGet("userId/{userId}")]
+        [HttpGet()]
         public async Task<ActionResult<RegistryResponse<List<ResultRegistryDTO>>>> GetAllRegistries(
-            [FromRoute] int userId,
+            [FromQuery] int userId,
             [FromQuery] string? dateBiggerThan = "",
             [FromQuery] string? dateLowerThan = "",
             [FromQuery] int? id = 0,
@@ -93,6 +93,23 @@ namespace API.Controllers.v1
 
             var req = new UpdateRegistryRequest { Data = updateRegistryDTO };
             var res = await _registryManager.UpdateRegistry(req);
+
+            if (res.HasErrors) return StatusCode(500, res);
+
+            if (res.Success) return Ok(res);
+
+            _logger.LogError("response with unknown error", res);
+            return StatusCode(500);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<UserResponse<ResultUserDTO>>> DeleteById([FromRoute] int id)
+        {
+            if (id == 0) return BadRequest();
+
+            var res = await _registryManager.DeleteRegistry(id);
+
+            if (res.Message == "Entity not found") return NotFound(res);
 
             if (res.HasErrors) return StatusCode(500, res);
 
