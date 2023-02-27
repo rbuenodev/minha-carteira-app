@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers.v1
 {
     [ApiController]
-    [Route("v1/api/registry")]
+    [Route("api/v1/registry")]
     public class RegistryController : ControllerBase
     {
 

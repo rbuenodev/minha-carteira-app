@@ -9,7 +9,7 @@ namespace API.Controllers.v1
 {
 
     [ApiController]
-    [Route("v1/api/user")]
+    [Route("api/v1/user")]
     public class UserController : ControllerBase
     {
 
