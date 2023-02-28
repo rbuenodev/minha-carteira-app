@@ -13,6 +13,6 @@ root.render(
       <AuthProvider>
         <App />
       </AuthProvider>
-    </ThemeProvider>
+    </ThemeProvider>    
   </React.StrictMode>
 );

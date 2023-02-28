@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button";
 import ContentHeader from "../../components/ContentHeader";
 import Input from "../../components/Input";
 import SelectInput from "../../components/SelectInput";
+import toast from "react-hot-toast";
 import {
   deleteRegistryById,
   getRegistryById,
@@ -44,7 +45,10 @@ const EditRegistry: React.FC = () => {
     userId: 1,
     userName: "",
   } as IRegistry);
+
   const navigate = useNavigate();
+  const notifyError = (msg: string) => toast.error(msg);
+  const notifySuccess = (msg: string) => toast.success(msg);
 
   const pageData = useMemo(() => {
     return id === "0"
@@ -92,15 +96,23 @@ const EditRegistry: React.FC = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.log("registry", registry);
       if (id === "0") {
         const res = await insertRegistry();
-        console.log("toast", res);
+        if (res) {
+          notifySuccess("Registro cadastrado com sucesso!");
+          clearForm();
+          return;
+        }
       } else {
         const res = await updateRegistry();
-        console.log("toast", res);
+        if (res) {
+          notifySuccess("Registro atualizado com sucesso!");
+          clearForm();
+          return;
+        }
       }
-      clearForm();
+      notifyError("Houve uma falha ao gravar.");
+      return;
     }
   };
 
@@ -117,11 +129,7 @@ const EditRegistry: React.FC = () => {
       return;
     }
 
-    if (res.success) {
-      console.log(res);
-      return true;
-    }
-    return false;
+    return res.success;
   };
 
   const insertRegistry = async () => {
@@ -130,11 +138,7 @@ const EditRegistry: React.FC = () => {
       return;
     }
 
-    if (res.success) {
-      console.log(res);
-      return true;
-    }
-    return false;
+    return res.success;
   };
 
   const deleteRegistry = async () => {
@@ -147,11 +151,12 @@ const EditRegistry: React.FC = () => {
     }
 
     if (res.success) {
-      console.log(res);
       clearForm();
       navigate("/edit/0");
+      notifySuccess("Registro deletado com sucesso!");
       return true;
     }
+    notifySuccess("Houve uma falha ao deletar.");
     return false;
   };
 
