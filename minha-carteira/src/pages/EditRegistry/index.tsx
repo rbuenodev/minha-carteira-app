@@ -20,11 +20,12 @@ import {
   Form,
   FormTitle,
 } from "./styles";
+import AlertDialog from "../../components/AlertDialog";
 
 interface IRegistry {
   id: number;
   description: string;
-  amount: number | undefined;
+  amount: number | string;
   type: string;
   frequency: string;
   date: string;
@@ -37,7 +38,7 @@ const EditRegistry: React.FC = () => {
   const [registry, setRegistry] = useState<IRegistry>({
     id: 0,
     description: "",
-    amount: undefined,
+    amount: "",
     date: "",
     type: "Entrada",
     frequency: "Eventual",
@@ -45,6 +46,12 @@ const EditRegistry: React.FC = () => {
     userId: 1,
     userName: "",
   } as IRegistry);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal((prev) => !prev);
+  };
 
   const navigate = useNavigate();
   const notifyError = (msg: string) => toast.error(msg);
@@ -92,9 +99,13 @@ const EditRegistry: React.FC = () => {
     ];
   }, []);
 
+  const disabledDeleteBtn = useMemo(() => {
+    if (id) return id === "0";
+    return false;
+  }, [id]);
+
   const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (validateForm()) {
       if (id === "0") {
         const res = await insertRegistry();
@@ -103,7 +114,8 @@ const EditRegistry: React.FC = () => {
           clearForm();
           return;
         }
-      } else {
+      } else if (id !== "0") {
+        console.log(registry);
         const res = await updateRegistry();
         if (res) {
           notifySuccess("Registro atualizado com sucesso!");
@@ -118,7 +130,7 @@ const EditRegistry: React.FC = () => {
 
   const validateForm = () => {
     if (registry) {
-      return true;
+      if (registry.description.length > 4 && registry.amount > 0) return true;
     }
     return false;
   };
@@ -128,7 +140,6 @@ const EditRegistry: React.FC = () => {
     if (!res) {
       return;
     }
-
     return res.success;
   };
 
@@ -137,7 +148,6 @@ const EditRegistry: React.FC = () => {
     if (!res) {
       return;
     }
-
     return res.success;
   };
 
@@ -154,6 +164,7 @@ const EditRegistry: React.FC = () => {
       clearForm();
       navigate("/edit/0");
       notifySuccess("Registro deletado com sucesso!");
+      openModal();
       return true;
     }
     notifySuccess("Houve uma falha ao deletar.");
@@ -164,7 +175,7 @@ const EditRegistry: React.FC = () => {
     setRegistry({
       id: 0,
       description: "",
-      amount: undefined,
+      amount: "",
       date: "",
       type: "Entrada",
       frequency: "Eventual",
@@ -250,18 +261,29 @@ const EditRegistry: React.FC = () => {
               setRegistry({ ...registry, obs: e.target.value });
             }}
             name="obs"
-            value={registry.obs}
+            value={registry.obs || ""}
           />
           <ContainerFooter>
+            <AlertDialog
+              showModal={showModal}
+              setShowModal={setShowModal}
+              description="Essa ação não poderá ser revertida. Você perderá o registro."
+              title="Tem certeza que deseja excluir?"
+              confirmDescritpion="Sim, deletar registro!"
+              handleConfirm={deleteRegistry}
+            />
+
             <DeleteButton
-              onClick={() => {
-                deleteRegistry();
-              }}
+              disabled={disabledDeleteBtn}
+              type="button"
+              onClick={openModal}
             >
               Excluir
             </DeleteButton>
             <BlueButton>
-              <Button>{id === "0" ? "Cadastrar" : "Atualizar"}</Button>
+              <Button type="submit">
+                {id === "0" ? "Cadastrar" : "Atualizar"}
+              </Button>
             </BlueButton>
           </ContainerFooter>
         </Form>

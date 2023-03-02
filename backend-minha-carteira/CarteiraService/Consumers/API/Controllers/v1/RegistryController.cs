@@ -87,7 +87,7 @@ namespace API.Controllers.v1
         }
 
         [HttpPut()]
-        public async Task<ActionResult<RegistryResponse<ResultRegistryDTO>>> PatchUser([FromBody] UpdateRegistryDTO updateRegistryDTO)
+        public async Task<ActionResult<RegistryResponse<ResultRegistryDTO>>> PutUser([FromBody] UpdateRegistryDTO updateRegistryDTO)
         {
             if (updateRegistryDTO == null) return BadRequest();
 

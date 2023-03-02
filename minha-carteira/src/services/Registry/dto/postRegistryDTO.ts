@@ -1,6 +1,6 @@
 export interface IPostRegistryDTO {
   description: string;
-  amount: number | undefined;
+  amount: number | string;
   type: string;
   frequency: string;
   date: string;

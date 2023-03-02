@@ -71,7 +71,7 @@ namespace API.Controllers.v1
         }
 
         [HttpPut()]
-        public async Task<ActionResult<UserResponse<ResultUserDTO>>> PatchUser([FromBody] UpdateUserDTO updateUserDTO)
+        public async Task<ActionResult<UserResponse<ResultUserDTO>>> PuthUser([FromBody] UpdateUserDTO updateUserDTO)
         {
             if (updateUserDTO == null) return BadRequest();
 

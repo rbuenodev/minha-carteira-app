@@ -19,7 +19,6 @@ export const ContainerInline = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   select {
     width: 100%;
     margin: 7px 0;
@@ -46,7 +45,6 @@ export const ContainerFooter = styled.div`
 
   > div {
     display: flex;
-    width: 50%;
 
     @media (max-width: 400px) {
       flex-direction: column;
