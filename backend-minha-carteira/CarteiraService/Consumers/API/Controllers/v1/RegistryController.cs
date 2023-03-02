@@ -13,13 +13,13 @@ namespace API.Controllers.v1
     [Route("api/v1/registry")]
     public class RegistryController : ControllerBase
     {
-
         private readonly ILogger<RegistryController> _logger;
         private readonly IRegistryManager _registryManager;
+        
         public RegistryController(ILogger<RegistryController> logger, IRegistryManager registryManager)
         {
             _logger = logger;
-            _registryManager = registryManager;
+            _registryManager = registryManager;            
         }
 
         [HttpGet()]
@@ -42,7 +42,7 @@ namespace API.Controllers.v1
                 DateBiggerThan = dateBiggerThan,
                 DateLowerThan = dateLowerThan
 
-            };
+            };            
 
             var res = await _registryManager.GetAllRegistry(filters);
 
@@ -87,7 +87,7 @@ namespace API.Controllers.v1
         }
 
         [HttpPut()]
-        public async Task<ActionResult<RegistryResponse<ResultRegistryDTO>>> PutUser([FromBody] UpdateRegistryDTO updateRegistryDTO)
+        public async Task<ActionResult<RegistryResponse<ResultRegistryDTO>>> PutRegistry([FromBody] UpdateRegistryDTO updateRegistryDTO)
         {
             if (updateRegistryDTO == null) return BadRequest();
 
@@ -103,7 +103,7 @@ namespace API.Controllers.v1
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserResponse<ResultUserDTO>>> DeleteById([FromRoute] int id)
+        public async Task<ActionResult<RegistryResponse<ResultRegistryDTO>>> DeleteById([FromRoute] int id)
         {
             if (id == 0) return BadRequest();
 

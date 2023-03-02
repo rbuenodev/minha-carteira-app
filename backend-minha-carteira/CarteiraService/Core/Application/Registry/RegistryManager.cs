@@ -120,7 +120,7 @@ namespace Application.Registry
         public async Task<RegistryResponse<ResultRegistryDTO>> UpdateRegistry(UpdateRegistryRequest request)
         {
             try
-            {
+            {                
                 var registry = UpdateRegistryDTO.MapToEntity(request.Data);
                 registry.IsValid();
 
